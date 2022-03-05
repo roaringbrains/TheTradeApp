@@ -10,8 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TheTradeApp">
         <activity
-            android:name=".corefeatures.LoginActivity"
-            android:exported="true">
+            android:name=".corefeatures.PhoneLoginActivity"
+            android:exported="true"
+            android:theme="@style/Theme.TheTradeApp.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -19,15 +20,27 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".corefeatures.EmailLoginActivity"
+            android:exported="true"
+            android:theme="@style/Theme.TheTradeApp.NoActionBar">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+        </activity>
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.TheTradeApp.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
     </application>
 

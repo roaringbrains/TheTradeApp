@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "229704472472",
+    "project_id": "thetradeapp-44621",
+    "storage_bucket": "thetradeapp-44621.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:229704472472:android:4cf464d67918425ce5fded",
+        "android_client_info": {
+          "package_name": "com.india.thetradeapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "229704472472-qqjgbt40dcuk55mkubko5vsc1pbg4ori.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.india.thetradeapp",
+            "certificate_hash": "d6a4a1a7c36f8d8f9dca09a6229dfdd5b5fa1c6d"
+          }
+        },
+        {
+          "client_id": "229704472472-ubav978s9sj7tjm13nibng4su1toe4rm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_L8uf1zn4zZwxCIkmEL6TWBCEPhMDjqM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "229704472472-ubav978s9sj7tjm13nibng4su1toe4rm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
