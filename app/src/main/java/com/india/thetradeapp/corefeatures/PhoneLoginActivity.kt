@@ -3,7 +3,6 @@ package com.india.thetradeapp.corefeatures
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.core.view.isVisible
 import com.google.firebase.FirebaseApp
@@ -13,10 +12,8 @@ import com.google.firebase.auth.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
-import com.india.thetradeapp.R
 import com.india.thetradeapp.databinding.ActivityPhoneLoginBinding
 import java.util.concurrent.TimeUnit
-import kotlin.coroutines.EmptyCoroutineContext.plus
 
 class PhoneLoginActivity : AppCompatActivity()  {
 
@@ -28,7 +25,8 @@ class PhoneLoginActivity : AppCompatActivity()  {
     private lateinit var resendToken: PhoneAuthProvider.ForceResendingToken
     private lateinit var callbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
 
         binding = ActivityPhoneLoginBinding.inflate(layoutInflater)
         auth = Firebase.auth
@@ -45,66 +43,51 @@ class PhoneLoginActivity : AppCompatActivity()  {
         FirebaseApp.initializeApp(this)
 
 
-        //binding.editTextPhoneEnterOtp.setText("saurav")
-
-
         binding.buttonLoginGetOtp.setOnClickListener{
 
-            var mobileNumber = binding.textLoginMobileNumber.text.toString()
+            var textMobileNumber = binding.textLoginMobileNumber.text.toString()
+            var textSignupCode = binding.textLoginSignupCode.text.toString()
 
-            if(mobileNumber.isNullOrEmpty()){
+            if(textMobileNumber.isNullOrEmpty()){
                 Toast.makeText(this,"Enter a Mobile Number",Toast.LENGTH_LONG).show()
                 return@setOnClickListener
-            }else if(mobileNumber.count() < 10 || mobileNumber.count() > 10){
+            }else if(textMobileNumber.count() < 10 || textMobileNumber.count() > 10){
                 Toast.makeText(this,"Enter a 10 Digit Mobile Number",Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }else{
-                mobileNumber = "+91"+mobileNumber
+                textMobileNumber = "+91"+textMobileNumber
+            }
+
+            if(textSignupCode.isNotEmpty())
+            {
+                db.collection("SignUpCodes").document(textSignupCode).get()
+                    .addOnSuccessListener{tasks ->
+
+                        //If Signup code is valid then Check if it is mapped to a User if not then map it with current user.
+                        Toast.makeText(this, "Logging in as " + tasks.get("ForUserType").toString(), Toast.LENGTH_LONG).show()
+                        if(tasks.get("IsActive").toString() == "true")
+                        {
+                            if(tasks.get("IsReadWrite").toString() == "true")
+                                startPhoneNumberVerification(textMobileNumber)
+                            else
+                                //Do nothing now
+                                Toast.makeText(this, "Do nothing now", Toast.LENGTH_LONG).show()
+
+                        }
+
+                    }
+                    .addOnFailureListener { it ->
+
+                        Toast.makeText(this, "Signup code is Invalid. Please reach out to Admin", Toast.LENGTH_LONG).show()
+                    }
+            }
+            else
+            {
+
             }
 
 
 
-
-            //First Check is the Signup Code is Valid entered or not, If not entered then the users is a Retailer
-            if(binding.textLoginSignupCode.text.toString().isNotEmpty()){
-
-                //The user is Supplier or Trader, Now check if the Signup Code is Valid or not.
-                val allSignupCodes = db.collection("SignUpCodes")
-
-                allSignupCodes.whereEqualTo("SignupCode",binding.textLoginSignupCode.text.toString())
-                    .whereEqualTo("IsActive",true)
-                    .whereEqualTo("IsReadWrite",true).get()
-                    .addOnSuccessListener {task ->
-
-                            //If no Signup records are found
-                            if(task.isEmpty){
-                                //Display a message that signup code is not valid
-                                Toast.makeText(this,"Signup code is Invalid. Please reach out to Admin",Toast.LENGTH_LONG).show()
-                            }else{
-
-                                //If Signup code is valid then Check if it is mapped to a User if not then map it with current user.
-//                                db.collection("UserSignUpCodeMapping").whereEqualTo("SignupCode",binding.textLoginSignupCode.text.toString())
-//                                    .whereEqualTo("MobileNumber",bindi)
-                                Toast.makeText(this,"Logging in as Supplier or Trader",Toast.LENGTH_LONG).show()
-                                //If Signup code Exists then proceed with Mobile number Auth and verification.
-                                startPhoneNumberVerification(mobileNumber)
-
-                            }
-                    }
-                    .addOnFailureListener {
-
-                        Toast.makeText(this,"Something broke while retrieving Signup Code",Toast.LENGTH_LONG).show()
-                    }
-
-
-            }else{
-
-                Toast.makeText(this,"Logging in as Retailer",Toast.LENGTH_LONG)
-                startPhoneNumberVerification(mobileNumber)
-                //startPhoneNumberVerification(binding.textLoginMobileNumber!!.text.toString())
-            }
-
-                //binding.editTextPhoneEnterOtp.setText("saurav1")
 
         }
 
@@ -148,10 +131,8 @@ class PhoneLoginActivity : AppCompatActivity()  {
             }
 
 
-            override fun onCodeSent(
-                verificationId: String,
-                token: PhoneAuthProvider.ForceResendingToken
-            ) {
+            override fun onCodeSent(verificationId: String,token: PhoneAuthProvider.ForceResendingToken)
+            {
                 Log.d(TAG, "onCodeSent:$verificationId")
                 storedVerificationId = verificationId
                 resendToken = token
@@ -166,13 +147,15 @@ class PhoneLoginActivity : AppCompatActivity()  {
 
     }
 
-    override fun onStart() {
+    override fun onStart()
+    {
         super.onStart()
         val currentUser = auth.currentUser
         updateUI(currentUser)
     }
 
-    private fun startPhoneNumberVerification(phoneNumber: String) {
+    private fun startPhoneNumberVerification(phoneNumber: String)
+    {
 
         val options = PhoneAuthOptions.newBuilder(auth)
             .setPhoneNumber(phoneNumber)
@@ -186,7 +169,8 @@ class PhoneLoginActivity : AppCompatActivity()  {
 //        binding.buttonVerify.isVisible = true
     }
 
-    private fun verifyPhoneNumberWithCode(verificationId: String?, code: String) {
+    private fun verifyPhoneNumberWithCode(verificationId: String?, code: String)
+    {
 
         val credential = PhoneAuthProvider.getCredential(verificationId!!, code)
 
@@ -194,7 +178,8 @@ class PhoneLoginActivity : AppCompatActivity()  {
 
     }
 
-    private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
+    private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential)
+    {
 
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
@@ -218,11 +203,13 @@ class PhoneLoginActivity : AppCompatActivity()  {
     }
 
 
-    private fun updateUI(user: FirebaseUser? = auth.currentUser) {
+    private fun updateUI(user: FirebaseUser? = auth.currentUser)
+    {
         // startActivity(Intent(this,HomeActivity::class.java))
     }
 
-    companion object {
+    companion object
+    {
         private const val TAG = "PhoneLoginActivity"
     }
 }
